@@ -1,6 +1,8 @@
-''' 
-  This class will handle all interactions with the datamuse api
-'''
+# -------------------------------------------------------------------- #
+# This class will handle all interactions with the datamuse api        #
+# Documentation for the datamuse.api can be found at:                  #
+# https://www.datamuse.com/api/                                        #
+# -------------------------------------------------------------------- #
 
 import requests
 
