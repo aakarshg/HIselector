@@ -13,9 +13,13 @@ def get_related_words_for(word):
   response = datamuse_request(request)
   
   related_words = []
-  if response not None:
+  if response:
+    # Get list of related words
     for word_info in response:
        related_words.append(word_info["word"])
+
+    # add the main word into the list
+    related_words.append(word)
 
   return related_words
 
