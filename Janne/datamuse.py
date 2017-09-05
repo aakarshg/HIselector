@@ -2,6 +2,8 @@
 # This class will handle all interactions with the datamuse api        #
 # Documentation for the datamuse.api can be found at:                  #
 # https://www.datamuse.com/api/                                        #
+#                                                                      #
+# Created by: JLA 9/5/2017                                             #
 # -------------------------------------------------------------------- #
 
 import requests

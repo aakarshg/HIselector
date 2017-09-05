@@ -1,7 +1,11 @@
-'''
-  This sen+ences class will positively select sentences that contain
-  keywords from the specified words bucket list.
-'''
+# -------------------------------------------------------------------- #
+# This program will take a text file as an input and output any        #
+# sentences containing any words that match a certain criteria.        #
+# The sentences printed out provide more context and specificity       #
+# for the gathering data from the input file.                          #
+#                                                                      #
+# Created by: JLA 9/5/2017                                             #
+# -------------------------------------------------------------------- #
 
 import argparse
 
