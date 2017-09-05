@@ -23,8 +23,7 @@ def main():
   data_source = args.data_source
 
   # Create buckets
-  # word_buckets = {'cost': None, 'increase': None, 'decrease': None}
-  word_buckets = {'increase': None}
+  word_buckets = {'cost': None, 'increase': None, 'decrease': None}
   for bucket_header in word_buckets:
     word_buckets[bucket_header] = datamuse.get_related_words_for(bucket_header)
 
@@ -34,10 +33,16 @@ def main():
     sentences = bunch.sentences
     
     for sentence in sentences:
-      # Check all word buckets
-      for bucket in word_buckets:
-        if (any(map(lambda word: word in sentence, word_buckets[bucket]))):
-          print (sentence) 
+      sentence.strip()
+      if sentence:
+        # Check all word buckets
+        contains_key_word = False
+        for bucket in word_buckets:
+          if (any(map(lambda word: word in sentence, word_buckets[bucket]))):
+            contains_key_word = True
+
+        if contains_key_word:
+          print (sentence + '\n') 
 
 if __name__ == "__main__":
   main()
