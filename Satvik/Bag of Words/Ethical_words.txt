@@ -1,8 +1,5 @@
 ethics
 business
-documents
-copyright
-rights
 public
 section
 state
@@ -10,7 +7,6 @@ law
 government
 services
 policy
-reserved
 national
 private
 work
