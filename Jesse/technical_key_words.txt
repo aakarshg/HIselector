@@ -1,5 +1,22 @@
-plan, plans, copay, providers, provider,
-coinsurance, income, copayment, allowance, out-of-network,
-in-network, deductible, inpatient, silver, gold, bronze,
-platinum,
-developmental, deductibles, requirements, liability, disabilities
+plan
+plans
+copay
+providers
+provider
+coinsurance
+income
+copayment
+allowance
+out-of-network
+in-network
+deductible
+inpatient
+silver
+gold
+bronze
+platinum
+developmental
+deductibles
+requirements
+liability
+disabilities
