@@ -31,7 +31,7 @@ def main():
   # Create buckets
   word_buckets = {}
   for word in useful_word_list:
-    word_buckets[word] = None
+    word_buckets[word] = [word]
 
   for bucket_header in word_buckets:
     word_buckets[bucket_header] = datamuse_technical.get_related_words_for(bucket_header)
