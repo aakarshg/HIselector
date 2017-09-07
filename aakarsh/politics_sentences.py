@@ -41,6 +41,5 @@ for sentence in find_good:
             continue
     if count == 2:
         sentence_list.append(str(sentence))
-
-data = '\n'.join(sentence_list)
+        
 print sentence_list
