@@ -58,3 +58,7 @@ words_clean = [w for w in words if w not in stop_words]
 # Post-Cleaning
 spread = FreqDist(words_clean)
 spread.plot(50)
+
+f=open("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\Satvik\\Bag of Words\\relevant_sentences.txt","w", encoding='utf-8')
+f.write(data)
+f.close()
