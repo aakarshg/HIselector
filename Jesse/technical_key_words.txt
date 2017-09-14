@@ -35,3 +35,5 @@ premium
 beneficiaries
 poverty
 psychological
+maternity
+newborn

@@ -17,3 +17,4 @@ for sentence in all_sentences:
 
     if( any(map(lambda word: word in sentence, words))):
         print(sentence + "\n\n")
+        
