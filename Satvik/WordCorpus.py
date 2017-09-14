@@ -31,7 +31,7 @@ words_cleaner = [w for w in words_clean if w not in common_words]
 # Post-Cleaning
 spread = FreqDist(words_cleaner)
 spread.plot(50)
-with open('C:\\Users\\satvi\\Documents\\DDDM\\Classwork\\Bag of Words\\Ethical_words.txt', 'w', encoding='utf-8') as f:
-    for word,freq in spread.most_common(100):
-        print(u'{};{}'.format(word, freq))
-        print(word, file=f)
+# with open('C:\\Users\\satvi\\Documents\\DDDM\\Classwork\\Bag of Words\\Ethical_words.txt', 'w', encoding='utf-8') as f:
+#     for word,freq in spread.most_common(100):
+#         print(u'{};{}'.format(word, freq))
+#         print(word, file=f)
