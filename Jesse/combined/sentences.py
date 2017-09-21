@@ -61,6 +61,9 @@ def main():
                  'statecraft': None,'Republican': None,'people': None,'national': None,'government': None,
                  'Obama': None,'Clinton': None,'Democrat': None,'Senate': None,'Minister': None,'President': None,
                  'reform': None,'congress': None,'federal': None}
+  legal_word_buckets = {'law': None, 'legal': None, 'regulation': None, 'effective': None, 'order': None, 'lawful': None,
+                        'valid': None, 'judicial': None, 'court': None, 'rule': None, 'system': None, 'control': None,
+                        'government': None, 'governor': None, 'councilman':None}
 
   ethical_list = open("Satvik/Bag of Words/Ethical_words.txt").read().split("\n")
   technical_list = open("data/technical_key_words.txt").read().split("\n")
@@ -75,6 +78,7 @@ def main():
   economic_word_buckets = getRelatedWordsForBucket(economic_word_buckets)
   ethical_word_buckets = getRelatedWordsForBucket(ethical_word_buckets)
   technical_word_buckets = getRelatedWordsForBucket(technical_word_buckets)
+  legal_word_buckets = getRelatedWordsForBucket(legal_word_buckets)
 
 
   # Parse data for sentences containing related words
@@ -83,6 +87,9 @@ def main():
 
   # parseDataForSentencesContainingRelatedWords(os.path.join("[politics-sentences]"), ethical_word_buckets, 
   # os.path.join("output", "ethicalSentences.TXT"))
+  
+  # parseDataForSentencesContainingRelatedWords(os.path.join([legal-sentences]), legat_word_buckets,
+  # os.path.join("output", "legalSentences.TXT"))
 
   parseDataForSentencesContainingRelatedWords(os.path.join("data", "Health_Insurance_plans.TXT"), technical_word_buckets, 
   os.path.join("output","technicalSentences.TXT"))
