@@ -63,7 +63,17 @@ def main():
                  'reform': None,'congress': None,'federal': None}
   legal_word_buckets = {'law': None, 'legal': None, 'regulation': None, 'effective': None, 'order': None, 'lawful': None,
                         'valid': None, 'judicial': None, 'court': None, 'rule': None, 'system': None, 'control': None,
-                        'government': None, 'governor': None, 'councilman':None}
+                        'government': None, 'governor': None, 'councilman':None,'Alabama':None, 'Alaska':None,
+                        'Arizona':None, 'Arkansas':None, 'California':None, 'Colorado':None, 'Connecticut':None, 
+                        'Delaware':None, 'Florida':None, 'Georgia':None, 'Hawaii':None, 'Idaho':None, 'Illinois':None,
+                        'Indiana':None, 'Iowa':None, 'Kansas':None, 'Kentucky':None, 'Louisiana':None, 'Maine':None,
+                        'Maryland':None, 'Massachusetts':None, 'Michigan':None, 'Minnesota':None, 'Mississippi':None,
+                        'Missouri':None, 'Montana':None, 'Nebraska':None, 'Nevada':None, 'New Hampshire':None, 
+                        'New Jersey':None, 'New Mexico':None, 'New York':None, 'North Carolina':None, 'North Dakota':None,
+                        'Ohio':None, 'Oklahoma':None, 'Oregon':None, 'Pennsylvania':None, 'Rhode Island':None, 
+                        'South Carolina':None, 'South Dakota':None, 'Tennessee':None, 'Texas':None, 'Utah':None, 
+                        'Vermont':None, 'Virginia':None, 'Washington':None, 'West Virginia':None, 'Wisconsin':None,
+                        'Wyoming':None}
 
   ethical_list = open("Satvik/Bag of Words/Ethical_words.txt").read().split("\n")
   technical_list = open("data/technical_key_words.txt").read().split("\n")
