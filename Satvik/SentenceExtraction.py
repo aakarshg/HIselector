@@ -18,7 +18,7 @@ find_good = bunch.sentences
 
 good_word_dict_2 = {}
 ethical_list = open("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\Satvik\\Bag of Words\\Ethical_words.txt").read().split("\n")
-technical_list = open("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\Jesse\\technical_key_words.txt").read().split("\n")
+technical_list = ['deductible','copay','co-insurance']
 for word in ['ethical', 'ethics', 'ethic']:
     ethical_list.extend(dictionary.synonym(word))
 for word in ['technical', 'technology']:
