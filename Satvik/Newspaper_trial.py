@@ -2,7 +2,7 @@ import newspaper
 import google
 import re
 
-plans = ['student blue health insurance', 'PSI health insurance']
+plans = ['student blue health insurance', 'PSI health insurance', 'ISO health insurance']
 for p in plans:
     search_results = google.search(p, stop=4, lang="en")
     print("*"*30)
@@ -10,7 +10,8 @@ for p in plans:
         data = newspaper.Article(url=link)
         data.download()
         data.parse()
-        text = data.text #.replace("\n"," ")
-        match = re.search(r'["$"].*', text)
-        if match:
-            print(match.group())
+        text = data.text
+        for line in text.split(". "):
+            match = re.search(r'.*[$].*', line)
+            if match:
+                print(match.group())
