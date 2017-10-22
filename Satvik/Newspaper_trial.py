@@ -1,5 +1,5 @@
 '''
-This code returns results that contains a figure for insurance plans.
+This code returns results that contains a figure for insurance plans with information about it retrieved from Google.
 A more refined version would include particular keywords from our truth table like deductible, copay, etc.
 '''
 
