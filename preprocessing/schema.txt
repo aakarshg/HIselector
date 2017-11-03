@@ -1,0 +1,26 @@
+CREATE TABLE benefit_cost (
+        plan_id varchar(30),
+        benefit_name text,
+       copay_in real,
+       coinsurance_in real,
+       copay_out real,
+       coinsurance_out real,
+       limit_qty int,
+       limit_unit text
+      );
+
+
+      CREATE TABLE rates (
+              plan_id varchar(30),
+              tobacco text,
+              age_lower int,
+              age_higher int,
+              indiv_rate real,
+              smoker_rate real
+            );
+
+
+CREATE TABLE ratings (
+              plan_id varchar(30),
+              rating_global text,
+              rating_enrolle );
