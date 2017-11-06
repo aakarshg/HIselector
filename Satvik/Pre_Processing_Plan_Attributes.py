@@ -14,7 +14,7 @@ plan_attributes = plan_attributes[plan_attributes['DentalOnlyPlan'] == 'No']
 # -------------------- Dropping columns 'MarketCoverage', 'DentalOnlyPlan' and 'ChildOnlyOffering'
 plan_attributes.drop(['MarketCoverage', 'DentalOnlyPlan', 'ChildOnlyOffering'], axis=1, inplace=True)
 
-# -------------------- Creating a set of programs that are delt with
+# -------------------- Creating a set of programs that are dealt with
 disease_programs = plan_attributes['DiseaseManagementProgramsOffered']
 programs = set()
 for each in disease_programs:
