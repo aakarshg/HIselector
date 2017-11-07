@@ -8,9 +8,10 @@ import google
 import re
 
 # Different plans as a test
-plans = ['student blue health insurance', 'PSI health insurance', 'ISO health insurance']
+plans = ['anthem inc expertinsurancereview']
 for p in plans:
     search_results = google.search(p, stop=4, lang="en")
+    print(search_results)
     print("*"*30)
     print(p.upper())
     print("_"*15)
@@ -19,7 +20,4 @@ for p in plans:
         data.download()
         data.parse()
         text = data.text
-        for line in text.split(". "):
-            match = re.search(r'.*[$].*', line)
-            if match:
-                print(match.group())
+        print(text)
