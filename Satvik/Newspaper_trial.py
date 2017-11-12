@@ -8,6 +8,8 @@ import google
 import pandas as pd
 import re
 import time
+from fake_useragent import UserAgent
+ua = UserAgent()
 
 pl = pd.read_csv("C:\\Users\\satvi\\Documents\\DDDM\\Project\\IssuerID_Name_Updated.csv")
 issuers = pd.read_csv("C:\\Users\\satvi\\Documents\\DDDM\\Project\\Plan_Attributes_PP2.csv", usecols=[1])
@@ -22,7 +24,7 @@ comments = []
 
 for p in plans:
     plan_comm = []
-    search_results = google.search(p, stop=4, lang="en", pause=3.0, user_agent = 'Mozilla/4.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
+    search_results = google.search(p, stop=4, lang="en", pause=3.0, user_agent=ua.random)
     print("*"*30)
     print(p.upper())
     print("_"*15)
