@@ -44,10 +44,15 @@ def create_db(db_loc, file_loc, tablename):
 
 # Table for Issuer ID Mapping
 # create_db("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
-#           "C:\\Users\\satvi\\Documents\\DDDM\\Project\\IssuerID_Name.csv",
+#           "C:\\Users\\satvi\\Documents\\DDDM\\Project\\IssuerID_Name_Updated.csv",
 #           "IssuerID_Name_Mapping")
 
 # Table for Ratings
+# create_db("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
+#           "C:\\Users\\satvi\\Documents\\DDDM\\Project\\Quality_Ratings_PP1.csv",
+#           "Ratings")
+
+# Table for Reviews
 create_db("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
-          "C:\\Users\\satvi\\Documents\\DDDM\\Project\\Quality_Ratings_PP1.csv",
-          "Ratings")
+          "C:\\Users\\satvi\\Documents\\DDDM\\Project\\Review_Table.csv",
+          "Reviews")
