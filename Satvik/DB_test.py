@@ -53,6 +53,11 @@ def create_db(db_loc, file_loc, tablename):
 #           "Ratings")
 
 # Table for Reviews
+# create_db("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
+#           "C:\\Users\\satvi\\Documents\\DDDM\\Project\\Review_Table.csv",
+#           "Reviews")
+
+# Table for BBB Ratings
 create_db("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
-          "C:\\Users\\satvi\\Documents\\DDDM\\Project\\Review_Table.csv",
-          "Reviews")
+          "C:\\Users\\satvi\\Documents\\DDDM\\Project\\BBBRatings.csv",
+          "BBBRatings")
