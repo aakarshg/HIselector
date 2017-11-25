@@ -174,25 +174,32 @@ def soft_filters(df, db_loc, age, smoking='No', benefit='Emergency Room Services
     results = c.execute(query)
     soft_df = pd.DataFrame(results.fetchall())
     soft_df.columns = [description[0] for description in results.description]
-    df['distance'] = soft_df.apply(lambda x: euclidean(np.array([int(x['CountryCoverage']),
-                                                            int(x['MOOP']),
-                                                            int(x['DedInn']),
-                                                            int(x['copayin_norm']),
-                                                            int(x['coinsin_norm']),
-                                                            int(x['premium']),
-                                                            int(x['visits_norm'])]),
-                                                  np.array([oo_cntry, moop_in, ded_in, copay_in,
-                                                            coin_in, prem, visit])),
-                              axis=1)
+    # df['distance'] = soft_df.apply(lambda x: euclidean(np.array([float(x['CountryCoverage']),
+    #                                                         float(x['MOOP']),
+    #                                                         float(x['DedInn']),
+    #                                                         float(x['copayin_norm']),
+    #                                                         float(x['coinsin_norm']),
+    #                                                         float(x['premium']),
+    #                                                         float(x['visits_norm'])]),
+    #                                               np.array([oo_cntry, moop_in, ded_in, copay_in,
+    #                                                         coin_in, prem, visit])),
+    #                           axis=1)
+
+    df['distance'] = soft_df.apply(lambda x: sum(np.array([float(x['MOOP']), float(x['DedInn']),
+                                                  float(x['copayin_norm']), float(x['coinsin_norm']),
+                                                  float(x['premium']), float(x['visits_norm'])]) -
+                                                 np.array([moop_in, ded_in, copay_in, coin_in, prem, visit]),
+                                                 (float(x['CountryCoverage']) - oo_cntry)**2),
+                                   axis=1)
     df['price'] = soft_df['premium']
     close_connection(conn, c)
-    return df.sort(['distance', 'price'], ascending=[False, True]).head()
+    return df.sort(['distance', 'price'], ascending=[True, True]).head()
 
 
 df = hard_filters_pg1("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", zip=32003, age=26,
                       tobacco_usage='No', benefit='Transplant', premium=2000)
 final_df = soft_filters(df, "C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", age=26,
-                        prem=0.2, moop_in=0.3, oo_cntry=0, ded_in=1, visit=0.3)
+                        prem=0.2, moop_in=0.3, oo_cntry=1, ded_in=1, visit=0.3)
 df2 = get_plan_names("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", df)
 
 print(len(df))
