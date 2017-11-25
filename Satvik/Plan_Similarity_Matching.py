@@ -14,14 +14,17 @@ import uszipcode
 # Deductible IN - 200 (1)
 # MOOP IN - 100 (0)
 
+
 def create_connection(db_loc):
     conn = sqlite3.connect(db_loc)
     c = conn.cursor()
     return conn, c
 
+
 def close_connection(conn, c):
     c.close()
     conn.close()
+
 
 def hard_filters_pg1(db_loc, zip=None, age=None, tobacco_usage=None, disease=None, benefit=None, premium=None):
     if zip is None or str(zip).strip() == "" or age is None or str(age).strip() == "" or tobacco_usage is None:
@@ -36,8 +39,6 @@ def hard_filters_pg1(db_loc, zip=None, age=None, tobacco_usage=None, disease=Non
             return "Invalid zipcode"
     conn, c = create_connection(db_loc)
     hard_df = pd.DataFrame()
-    print(disease is None)
-    print(benefit is None)
     if disease is not None and benefit is not None:
         print("Disease/Benefit not null")
         if tobacco_usage == "No":
@@ -135,9 +136,9 @@ def hard_filters_pg1(db_loc, zip=None, age=None, tobacco_usage=None, disease=Non
                                 "on substr(p.planid, 1, 14) = c.plan_id",
                                 (state, age, age))
             hard_df = pd.DataFrame(results.fetchall())
-
+    if hard_df.empty:
+        return "No results to show for your area"
     hard_df.columns = [description[0] for description in results.description]
-    print(hard_df.columns)
     close_connection(conn, c)
     return hard_df
 
@@ -155,31 +156,44 @@ def get_plan_names(db_loc, hard_df1):
     # return names
 
 
-def hard_filters_pg2(db_loc, hard_df1, med_condition = None, benefit = None):
-    if med_condition == None and benefit == None:
-        return hard_df1
+def soft_filters(df, db_loc, age, smoking='No', benefit='Emergency Room Services',
+                 prem=0, coin_in=0, copay_in=0, ded_in=0, moop_in=0, visit=0.5, oo_cntry=0.5):
     conn, c = create_connection(db_loc)
-    plan_id = hard_df1['plan_id'].tolist()
-    if med_condition != None:
-        results =0
+    planid = df['p.planid'].tolist()
+    if smoking == 'No':
+        rate_col = "c.rate_norm"
+    else:
+        rate_col = "c.smoker_norm"
+    query = "select distinct p.planId, p.CountryCoverage, p.MOOP, p.DedInn, b.copayin_norm, b.coinsin_norm, " \
+            + rate_col + " as premium, v.visits_norm " \
+            "from Plan_Attributes p, benefits b, visits v, cost c " \
+            "on p.PlanId = b.plan_id and p.IssuerId = v.issuer_id and substr(p.planid, 1, 14) = c.plan_id " \
+            "where p.planId in ('" + '\',\''.join(planid) + "') " \
+            "and b.benefit_name = '" + str(benefit) + \
+            "' and c.age_lower<=" + str(age) + " and c.age_higher>=" + str(age)
+    results = c.execute(query)
+    soft_df = pd.DataFrame(results.fetchall())
+    soft_df.columns = [description[0] for description in results.description]
+    df['distance'] = soft_df.apply(lambda x: euclidean(np.array([int(x['CountryCoverage']),
+                                                            int(x['MOOP']),
+                                                            int(x['DedInn']),
+                                                            int(x['copayin_norm']),
+                                                            int(x['coinsin_norm']),
+                                                            int(x['premium']),
+                                                            int(x['visits_norm'])]),
+                                                  np.array([oo_cntry, moop_in, ded_in, copay_in,
+                                                            coin_in, prem, visit])),
+                              axis=1)
+    df['price'] = soft_df['premium']
+    close_connection(conn, c)
+    return df.sort(['distance', 'price'], ascending=[False, True]).head()
 
 
-def soft_filters(df, coin = None, ded_in = None, moop_in = None, ded_oon = None, moop_oon = None, international = None):
-    filters = [coin, ded_in, moop_in, ded_oon, moop_oon, international]
-    cols = ['']
-
-    df['distance'] = df.apply(lambda x: euclidean(np.array([int(x['TEHBDedInnTier1Coinsurance_R']),
-                                                            int(x['TEHBDedInnTier1Individual_R']),
-                                                            int(x['TEHBInnTier1IndividualMOOP_R'])]),
-                                                  np.array([coin, ded_in, moop_in])), axis=1)
-    # df['distance'] = np.linalg.norm(df[['TEHBDedInnTier1Coinsurance_R', 'TEHBDedInnTier1Individual_R',
-    #                                     'TEHBInnTier1IndividualMOOP_R']].sub(np.array(coin, ded, moop)), axis=1)
-    print(df.sort('distance').head())
-
-
-df = hard_filters_pg1("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", zip=27606, age=26,
-                      tobacco_usage='Yes', premium=400)
+df = hard_filters_pg1("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", zip=32003, age=26,
+                      tobacco_usage='No', benefit='Transplant', premium=2000)
+final_df = soft_filters(df, "C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", age=26,
+                        prem=0.2, moop_in=0.3, oo_cntry=0, ded_in=1, visit=0.3)
 df2 = get_plan_names("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", df)
-df2
+
 print(len(df))
 soft_filters(df, 0, 1, 0)
