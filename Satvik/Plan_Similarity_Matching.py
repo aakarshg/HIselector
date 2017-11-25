@@ -153,8 +153,11 @@ def soft_filters(df, db_loc, age, smoking='No', benefit='Emergency Room Services
     else:
         rate_norm_col = "c.smoker_norm"
         rate_col = "c.smoker_rate"
-    query = "select distinct p.planId, p.PlanMarketingName, p.CountryCoverage, p.MOOP, p.DedInn, i.Issuer_Name, b.copayin_norm, b.coinsin_norm, " \
-            + rate_norm_col + " as premium_norm, " + rate_col + " as premium, v.visits_norm " \
+    query = "select distinct p.planId, p.PlanMarketingName, p.IssuerId, p.CountryCoverage, p.planType, p.MOOP, " \
+            "p.diseasemanagementprogramsoffered, p.TEHBInnTier1IndividualMOOP, p.TEHBOutOfNetIndividualMOOP, " \
+            "p.TEHBDedInnTier1Individual, p.TEHBDedOutOfNetIndividual, p.DedInn, i.Issuer_Name, b.copay_in, " \
+            "b.copay_out, b.coinsurance_in, b.coinsurance_out, b.copayin_norm, b.coinsin_norm, " \
+            + rate_norm_col + " as premium_norm, " + rate_col + " as premium, v.visits, v.visits_norm " \
             "from Plan_Attributes p, benefits b, visits v, cost c, IssuerID_Name_Mapping i " \
             "on p.PlanId = b.plan_id and p.IssuerId = v.issuer_id " \
             "and substr(p.planid, 1, 14) = c.plan_id and p.IssuerId = i.IssuerId " \
@@ -182,30 +185,56 @@ def soft_filters(df, db_loc, age, smoking='No', benefit='Emergency Room Services
                                                  ((float(x['CountryCoverage']) - oo_cntry)**2 +
                                                  (float(x['visits_norm']) - visit) ** 2)**0.5),
                                    axis=1)
-    df['price'] = soft_df['premium']
-    df['Plan_name'] = soft_df['PlanMarketingName']
-    df['Issuer_name'] = soft_df['Issuer_Name']
+    df['Price'] = soft_df['premium']
+    df['Plan_Name'] = soft_df['PlanMarketingName']
+    df['Issuer_Name'] = soft_df['Issuer_Name']
+    df['Issuer_ID'] = soft_df['IssuerId']
+    df['Out_Of_Country_Coverage'] = soft_df['CountryCoverage']
+    df['Plan_Type'] = soft_df['PlanType']
+    df['Disease_Management_Programs'] = soft_df['DiseaseManagementProgramsOffered']
+    df['MOOP_IN'] = soft_df['TEHBInnTier1IndividualMOOP']
+    df['MOOP_OUT'] = soft_df['TEHBOutOfNetIndividualMOOP']
+    df['Deductible_IN'] = soft_df['TEHBDedInnTier1Individual']
+    df['Deductible_OUT'] = soft_df['TEHBDedOutOfNetIndividual']
+    df['Copay_IN'] = soft_df['copay_in']
+    df['Copay_OUT'] = soft_df['copay_out']
+    df['Coinsurance_IN'] = soft_df['coinsurance_in']
+    df['Coinsurance_OUT'] = soft_df['coinsurance_out']
+    df['Number_Of_Visits'] = soft_df['visits']
     close_connection(conn, c)
-    return df.sort(['distance', 'price'], ascending=[True, True]).head()
+    return_df = df.sort(['distance', 'Price'], ascending=[True, True]).head()
+    return_df.reset_index(drop=True, inplace=True)
+    return return_df
 
 
-def get_plan_names(db_loc, hard_df1):
+def get_plan_information(db_loc, issuerid, planid):
     conn, c = create_connection(db_loc)
-    res = list(set(hard_df1['plan_id'].apply(lambda x: x[0:5])))
-    query = "SELECT Issuer_name FROM IssuerID_Name_Mapping where IssuerID IN (" + ','.join(res) + ")"
-    results = c.execute(query)
-    l = results.fetchall()
-    print([c[0] for c in l])
-    # names = pd.DataFrame(results.fetchall())
-    # names.columns = [description[0] for description in results.description]
-    # close_connection(conn, c)
-    # return names
 
-df = hard_filters_pg1("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", zip=32003, age=26,
-                      tobacco_usage='No', benefit='Transplant', premium=2000)
-final_df = soft_filters(df, "C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db", age=26,
-                        prem=0, moop_in=0.3, oo_cntry=1, ded_in=0.3, visit=0.8, coin_in=0.2)
-plan_details = get_plan_names(final_df, "C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db")
+    results = c.execute("Select * from BBBRatings where issuerid = ?", (issuerid,))
+    ratings = pd.DataFrame(results.fetchall())
+    ratings.columns = [description[0] for description in results.description]
 
-print(len(df))
-soft_filters(df, 0, 1, 0)
+    results = c.execute("Select Pos_Count, Neg_Count, High_Count, Low_Count from Reviews r where issuerid = ?",
+                        (issuerid,))
+    reviews = pd.DataFrame(results.fetchall())
+    reviews.columns = [description[0] for description in results.description]
+
+    results = c.execute("Select benefit_name from benefits where plan_id = ? ", (planid,))
+    benefits = pd.DataFrame(results.fetchall())
+    benefits = benefits[0].tolist()
+
+    results = c.execute("Select URLForEnrollmentPayment, PlanBrochure from Plan_Attributes where PlanId = ?",
+                        (planid,))
+    links = pd.DataFrame(results.fetchall())
+    links.columns = [description[0] for description in results.description]
+
+    return ratings, reviews, benefits, links
+
+
+df = hard_filters_pg1("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
+                      zip=27606, age=26, tobacco_usage='Yes', benefit='Transplant', premium=2000)
+final_df = soft_filters(df,
+                        "C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
+                        age=26, prem=0, moop_in=0.3, oo_cntry=1, ded_in=0.3, visit=0.8, coin_in=0.2)
+ratings, reviews, benefits, links = get_plan_information("C:\\Users\\satvi\\Documents\\GitHub\\HIselector\\preprocessing\\sample.db",
+                                    issuerid=final_df['Issuer_ID'][0], planid=final_df['p.planid'][0])
